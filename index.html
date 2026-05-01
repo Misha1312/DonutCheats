@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DonutCheats | HvH Software</title>
+    <style>
+        /* Базовые настройки и переменные */
+        :root {
+            --bg-color: #09090b;
+            --panel-bg: #121214;
+            --card-bg: #18181b;
+            --card-hover: #27272a;
+            --primary: #8b5cf6;
+            --primary-hover: #7c3aed;
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
+            --border: #27272a;
+            --border-active: #8b5cf6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Шапка */
+        .header {
+            background-color: rgba(9, 9, 11, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        /* Основная разметка (Разделение экрана) */
+        .dashboard {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+
+        /* Левая часть: Карточки */
+        .cards-section {
+            flex: 1.2; /* Занимает чуть больше места */
+        }
+
+        .section-title {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: var(--text-main);
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* По 2 карточки на ряд */
+            gap: 20px;
+        }
+
+        .cheat-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cheat-card:hover {
+            transform: translateY(-4px);
+            border-color: #3f3f46;
+        }
+
+        .cheat-card.active {
+            border-color: var(--border-active);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.15);
+        }
+
+        .cheat-card img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .cheat-card-info {
+            padding: 16px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .card-version {
+            background-color: rgba(139, 92, 246, 0.15);
+            color: var(--primary);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .card-desc {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        /* Правая часть: Окно просмотра */
+        .preview-section {
+            flex: 1; /* Занимает оставшееся место */
+            position: sticky;
+            top: 100px; /* Отступ от шапки при скролле */
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            min-height: 500px;
+            overflow: hidden;
+        }
+
+        .preview-content {
+            display: none; /* Скрыто по умолчанию */
+            padding: 30px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .preview-content.active {
+            display: block;
+        }
+
+        /* Дефолтное состояние правой панели */
+        .preview-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 500px;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .preview-placeholder svg {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        /* Наполнение страницы чита */
+        .detail-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .detail-title {
+            font-size: 28px;
+        }
+
+        .detail-desc {
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            font-size: 15px;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            background-color: var(--primary);
+            color: #fff;
+            text-decoration: none;
+            text-align: center;
+            padding: 14px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Адаптивность для мобилок */
+        @media (max-width: 992px) {
+            .dashboard {
+                flex-direction: column;
+            }
+            .preview-section {
+                position: static;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">Donut<span>Cheats</span></div>
+        </div>
+    </header>
+
+    <main class="dashboard">
+        <!-- Левая колонка (Список карточек) -->
+        <section class="cards-section">
+            <h2 class="section-title">Aviable Cheats</h2>
+            <div class="cards-grid">
+                
+                <!-- Карточка 1 -->
+                <div class="cheat-card" onclick="openPreview('cheat-1', this)">
+                    <img src="https://glazedclient.com/logo.png" alt="Cheat 1">
+                    <div class="cheat-card-info">
+                        <div class="card-header">
+                            <div class="card-title">Glazed</div>
+                            <div class="card-version">v16.1</div>
+                        </div>
+                        <div class="card-desc">Meteor addon for DonutSMP, undetected, for 1.21.11</div>
+                    </div>
+                </div>
+
+                <!-- Карточка 2 -->
+                <div class="cheat-card" onclick="openPreview('cheat-2', this)">
+                    <img src="https://placehold.co/400x200/18181b/8b5cf6?text=Thumb+2" alt="Cheat 2">
+                    <div class="cheat-card-info">
+                        <div class="card-header">
+                            <div class="card-title">Название Чита 2</div>
+                            <div class="card-version">v2.1</div>
+                        </div>
+                        <div class="card-desc">Краткое описание второго чита. Кликни для деталей.</div>
+                    </div>
+                </div>
+
+                <!-- Карточка 3 -->
+                <div class="cheat-card" onclick="openPreview('cheat-3', this)">
+                    <img src="https://placehold.co/400x200/18181b/8b5cf6?text=Thumb+3" alt="Cheat 3">
+                    <div class="cheat-card-info">
+                        <div class="card-header">
+                            <div class="card-title">Название Чита 3</div>
+                            <div class="card-version">v1.5</div>
+                        </div>
+                        <div class="card-desc">Краткое описание третьего чита. Кликни для деталей.</div>
+                    </div>
+                </div>
+
+                <!-- Карточка 4 -->
+                <div class="cheat-card" onclick="openPreview('cheat-4', this)">
+                    <img src="https://placehold.co/400x200/18181b/8b5cf6?text=Thumb+4" alt="Cheat 4">
+                    <div class="cheat-card-info">
+                        <div class="card-header">
+                            <div class="card-title">Название Чита 4</div>
+                            <div class="card-version">v3.0</div>
+                        </div>
+                        <div class="card-desc">Краткое описание четвертого чита. Кликни для деталей.</div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Правая колонка (Окно предпросмотра) -->
+        <section class="preview-section">
+            
+            <!-- Состояние по умолчанию (пока ничего не выбрано) -->
+            <div id="default-view" class="preview-content active preview-placeholder">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
+                <h3>Choose client</h3>
+                <p>Press card in left side, to open cheat page.</p>
+            </div>
+
+            <!-- Шаблон страницы для Чита 1 -->
+            <div id="cheat-1" class="preview-content">
+                <img src="https://glazedclient.com/og-image.svg" class="detail-img" alt="Screenshot 1">
+                <div class="detail-header">
+                    <h2 class="detail-title">Glazed</h2>
+                    <span class="card-version">v16.1</span>
+                </div>
+                <div class="detail-desc">
+                    <p>Ultimate DonutSMP Client.</p>
+                    <p>Functions:</p>
+                    <p>Automation & Misc: AH Sniper, Auto Sell, Tunnel Base Finder, and more</p>
+                    <p>Esp & Visuals: 1x1x1 Holes, Block Notifier, Piston ESP, Spawner ESP, Advanced Stash Finder and more</p>
+                    <p>PVP & Combat: Aim Assist, Anchor Macro, Anti Trap, Crystal Macro, and more</p>
+                    <p>Requirements: Meteor, Fabric API</p>
+                </div>
+                <a href="#" class="btn">Download</a>
+            </div>
+
+            <!-- Шаблон страницы для Чита 2 -->
+            <div id="cheat-2" class="preview-content">
+                <img src="https://placehold.co/600x300/18181b/8b5cf6?text=Full+Screenshot+2" class="detail-img" alt="Screenshot 2">
+                <div class="detail-header">
+                    <h2 class="detail-title">Название Чита 2</h2>
+                    <span class="card-version">v2.1</span>
+                </div>
+                <div class="detail-desc">
+                    Полное описание второго чита. Опиши работу киллауры, авто-тотема и других модулей.
+                </div>
+                <a href="#" class="btn">Скачать Архив</a>
+            </div>
+
+            <!-- Шаблон страницы для Чита 3 -->
+            <div id="cheat-3" class="preview-content">
+                <img src="https://placehold.co/600x300/18181b/8b5cf6?text=Full+Screenshot+3" class="detail-img" alt="Screenshot 3">
+                <div class="detail-header">
+                    <h2 class="detail-title">Название Чита 3</h2>
+                    <span class="card-version">v1.5</span>
+                </div>
+                <div class="detail-desc">
+                    Полное описание третьего чита. Место для информации по настройке конфигов.
+                </div>
+                <a href="#" class="btn">Скачать Архив</a>
+            </div>
+
+            <!-- Шаблон страницы для Чита 4 -->
+            <div id="cheat-4" class="preview-content">
+                <img src="https://placehold.co/600x300/18181b/8b5cf6?text=Full+Screenshot+4" class="detail-img" alt="Screenshot 4">
+                <div class="detail-header">
+                    <h2 class="detail-title">Название Чита 4</h2>
+                    <span class="card-version">v3.0</span>
+                </div>
+                <div class="detail-desc">
+                    Полное описание четвертого чита. Например, заточка под анархию и обход античитов.
+                </div>
+                <a href="#" class="btn">Скачать Архив</a>
+            </div>
+
+        </section>
+    </main>
+
+    <script>
+        function openPreview(cheatId, cardElement) {
+    // 1. Скрываем вообще все блоки в правой панели (включая плейсхолдер)
+    const allContent = document.querySelectorAll('.preview-content');
+    allContent.forEach(content => {
+        content.classList.remove('active');
+        content.style.display = 'none'; // Гарантированно скрываем
+    });
+
+    // 2. Убираем активный класс (рамку) со всех карточек слева
+    const allCards = document.querySelectorAll('.cheat-card');
+    allCards.forEach(card => {
+        card.classList.remove('active');
+    });
+
+    // 3. Находим нужный блок и отображаем его
+    const targetPreview = document.getElementById(cheatId);
+    if (targetPreview) {
+        targetPreview.classList.add('active');
+        targetPreview.style.display = 'block'; // Показываем выбранный софт
+    }
+
+    // 4. Добавляем активный класс карточке, на которую нажали
+    cardElement.classList.add('active');
+}
+    </script>
+</body>
+</html>
